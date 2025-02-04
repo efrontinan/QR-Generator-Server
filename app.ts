@@ -1,4 +1,9 @@
+import dotenv from "dotenv"
+import "./db"
+
 import express from "express"
+
+dotenv.config()
 const app = express()
 
 app.get('/', (req: express.Request, res: express.Response) => {
