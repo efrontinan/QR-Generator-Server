@@ -1,5 +1,7 @@
-import { Schema, model } from "mongoose";
-const userSchema = new Schema({
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const mongoose_1 = require("mongoose");
+const userSchema = new mongoose_1.Schema({
     email: {
         type: String,
         required: [true, 'El email de usuario es obligatorio'],
@@ -22,5 +24,5 @@ const userSchema = new Schema({
 }, {
     timestamps: true
 });
-const User = model("User", userSchema);
-export default User;
+const User = (0, mongoose_1.model)("User", userSchema);
+exports.default = User;

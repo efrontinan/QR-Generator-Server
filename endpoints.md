@@ -20,5 +20,5 @@
 |-----------------|----------|------------|
 |        POST         |     /codes     |      Save a QR created     | 
 |        GET         |     /codes/:userid    |      Get QR for user     | 
-|        DELETE         |     /codes/:id     |      Delete qrcode      | 
-|        GET         |     /codes/:id     |      Get qrcode      | 
+|        DELETE         |     /code/:id     |      Delete qrcode      | 
+|        GET         |     /code/:id     |      Get qrcode      | 

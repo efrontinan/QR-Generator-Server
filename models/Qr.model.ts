@@ -7,9 +7,13 @@ const qrSchema = new Schema(
             ref: 'User',
             required: [true, 'El autor es necesario']
         },
-        scg: {
+        svg: {
             type: String,
             required: [true, 'El svg es necesario']
+        },
+        name: {
+            type: String,
+            required: [true, 'El nombre del QR es necesario']
         }
     },
     {

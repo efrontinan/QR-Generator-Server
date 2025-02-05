@@ -1,7 +1,12 @@
 import User from '../models/User.model'
 import express from "express"
-// import { genSaltSync, hashSync } from "bcrypt-ts"
-// const saltRounds = 11
+import bcrypt from "bcryptjs"
+const saltRounds = 11
+import jwt from "jsonwebtoken"
+
+interface AuthenticatedRequest extends express.Request {
+    payload?: any;
+}
 
 const signUp = (req: express.Request, res: express.Response, next: express.NextFunction) => {
 
@@ -29,12 +34,12 @@ const signUp = (req: express.Request, res: express.Response, next: express.NextF
                 return
             }
 
-            // const salt = genSaltSync(saltRounds)
-            // const hashedPassword = hashSync(password, salt)
+            const salt = bcrypt.genSaltSync(saltRounds)
+            const hashedPassword = bcrypt.hashSync(password, salt)
 
             return User.create({
                 email,
-                password,
+                password: hashedPassword,
                 username,
                 birth
             })
@@ -43,4 +48,54 @@ const signUp = (req: express.Request, res: express.Response, next: express.NextF
         .catch(err => next(err))
 }
 
-export { signUp } 
+const loginUser = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+
+    const { email, password } = req.body
+
+    if (email === '' || password === '') {
+        console.log('Provide email and password')
+        res.status(401).json({ message: 'Provide email and password' })
+        return
+    }
+
+    User
+        .findOne({ email })
+        .then(user => {
+
+            if (!user) {
+                res.status(401).json({ message: 'This user does not exist' })
+                return
+            }
+
+            const isCorrectPwd = bcrypt.compareSync(password, user.password)
+
+            if (!isCorrectPwd) {
+                res.status(401).json({ message: 'Incorrect password' })
+                return
+            }
+
+            const { _id, email, username } = user
+            const payload = { _id, email, username }
+
+            const authToken = jwt.sign(
+                payload,
+                process.env.TOKEN_SECRET as string,
+                { algorithm: 'HS256', expiresIn: '6h' }
+            )
+
+            res.json({ authToken })
+        })
+
+}
+
+const verifyUser = (req: AuthenticatedRequest, res: express.Response, next: express.NextFunction) => {
+
+    if (!req.payload) {
+        res.status(401).json({ message: "Unauthorized" })
+        return
+    }
+
+    res.json({ loggedUserData: req.payload })
+}
+
+export { signUp, loginUser, verifyUser } 
