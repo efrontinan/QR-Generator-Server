@@ -85,6 +85,7 @@ const loginUser = (req: express.Request, res: express.Response, next: express.Ne
 
             res.json({ authToken })
         })
+        .catch(err => next(err))
 
 }
 
