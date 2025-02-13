@@ -70,7 +70,7 @@ const deleteQr = (req: AuthenticatedRequest, res: express.Response, next: expres
     QR
         .findByIdAndDelete(id)
         .then(() => {
-            res.status(204)
+            res.sendStatus(204)
         })
         .catch(err => next(err))
 }
